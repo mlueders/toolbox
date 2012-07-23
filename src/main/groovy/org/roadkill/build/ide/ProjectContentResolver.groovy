@@ -8,14 +8,14 @@ abstract class ProjectContentResolver {
 
     abstract List collectProjectDependencyNames()
 
-    abstract List collectLibraryDependencyFiles()
+    abstract File getLibraryDir()
 
     abstract List collectTestPaths()
 
     abstract List collectSrcPaths()
 
 
-    private File projectDir
+    File projectDir
     private XmlNodeStringTranslator translator = new XmlNodeStringTranslator()
 
     ProjectContentResolver(File projectDir) {
@@ -80,6 +80,19 @@ abstract class ProjectContentResolver {
         File ideaProjectLibaryDirectory = resolveIdeaProjectLibraryDirectory()
         String moduleLibraryFileName = getIdeaModuleLibraryName().replace('-', '_') + ".xml"
         new File(ideaProjectLibaryDirectory, moduleLibraryFileName)
+    }
+
+    private List collectLibraryDependencyFiles() {
+        List libraryDependencyFiles = []
+
+        if (libraryDir.exists()) {
+            libraryDir.eachFileRecurse(FILES) { File file ->
+                if (file.name.endsWith('.jar')) {
+                    libraryDependencyFiles << file
+                }
+            }
+        }
+        libraryDependencyFiles
     }
 
     List collectLibraryDependencyDirectoryPaths() {

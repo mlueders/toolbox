@@ -20,6 +20,8 @@ class XmlNodeStringTranslator {
     }
 
     void writeNodeToFile(Node node, File file) {
+        file.parentFile.mkdirs()
+
         file.withWriter { BufferedWriter writer ->
             writer.writeLine('<?xml version="1.0" encoding="UTF-8"?>')
             writer << nodeToText(node)
